@@ -49,6 +49,10 @@ var FingerboardQuiz = {
     },
     renderError: function(errorMessage) {
     
+    },
+    renderControls: function(targetSelector) {
+        var $controls = FingerboardViewController.renderControls();
+        $controls.appendTo($(targetSelector));
     }
 };
 
@@ -56,6 +60,8 @@ $(document).ready(function() {
     // Note positions include the nut!!!
     FingerboardQuiz.initialize(4, 22, false, FingerboardQuiz.PRESET_CELLO);
     FingerboardQuiz.renderFingerboard("#fretboard-container");
+    
+    FingerboardQuiz.renderControls("#fretboard-controls-container");
     
     // TESTING!!!
     FingerboardViewController.getFbSectionPercentages(12);
@@ -75,4 +81,22 @@ $(document).ready(function() {
     $("#button-highlight-perfect-intervals").click(function() {
         
     });
+    
+    $("#button-highlight-chord").click(function() {
+        var chordId = parseInt($("#chord-select").val());
+        var startingPitchId = parseInt($("#pitch-select").val());
+        
+        FingerboardViewController.highlightScaleOrChord(chordId, startingPitchId);
+    });
+    
+    $("#button-highlight-scale").click(function() {
+        var scaleId = parseInt($("#scale-select").val());
+        var startingPitchId = parseInt($("#pitch-select").val());
+        
+        FingerboardViewController.highlightScaleOrChord(scaleId, startingPitchId);
+    });
+    
+    
+    // HAX
+    FingerboardViewController.renderControls();
 });

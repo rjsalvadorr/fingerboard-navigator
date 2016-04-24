@@ -2,19 +2,35 @@
     Controls and encapsulates fingerboard logic, 
 */
 var FingerboardController = {
+    constants: {
+        SCALE_CHORD_TYPES: [
+            // Interval numbers = steps upwards.
+            {quality: "MINOR", type: "SCALE", name: "Minor scale", id: 11, intervals: [2, 1, 2, 2, 1, 2]},
+            {quality: "MAJOR", type: "SCALE", name: "Major scale", id: 12, intervals: [2, 2, 1, 2, 2, 2]},
+
+            {quality: "MAJOR", type: "CHORD", name: "Major triad", id: 21, intervals: [4, 3]},
+            {quality: "MINOR", type: "CHORD", name: "Minor triad", id: 22, intervals: [3, 4]},
+            {quality: "DIMINISHED", type: "CHORD", name: "Diminished triad", id: 23, intervals: [3, 3]},
+
+            {quality: "MAJOR", type: "CHORD", name: "Major 7th", id: 31, intervals: [4, 3, 4]},
+            {quality: "MINOR", type: "CHORD", name: "Minor 7th", id: 32, intervals: [3, 4, 3]},
+            {quality: "DIMINISHED", type: "CHORD", name: "Half-diminished 7th", id: 33, intervals: [3, 3, 4]},
+            {quality: "DIMINISHED", type: "CHORD", name: "Diminished 7th", id: 34, intervals: [3, 3, 3]}
+        ],
+    },
     BASE_PITCH_LETTERS: [
         {name: "A", flatName: "", sharpName: ""},
-        {name: "", flatName: "B♭", sharpName: "A♯"},
+        {name: "", flatName: "Bb", sharpName: "A#"},
         {name: "B", flatName: "", sharpName: ""},
         {name: "C", flatName: "", sharpName: ""},
-        {name: "", flatName: "D♭", sharpName: "C♯"},
+        {name: "", flatName: "Db", sharpName: "C#"},
         {name: "D", flatName: "", sharpName: ""},
-        {name: "", flatName: "E♭", sharpName: "D♯"},
+        {name: "", flatName: "Eb", sharpName: "D#"},
         {name: "E", flatName: "", sharpName: ""},
         {name: "F", flatName: "", sharpName: ""},
-        {name: "", flatName: "G♭", sharpName: "F♯"},
+        {name: "", flatName: "Gb", sharpName: "F#"},
         {name: "G", flatName: "", sharpName: ""},
-        {name: "", flatName: "A♭", sharpName: "G♯"}
+        {name: "", flatName: "Ab", sharpName: "G#"}
     ],
     MIDI_PITCHES: [],
     MIDI_CODE_START: 21,
@@ -22,6 +38,7 @@ var FingerboardController = {
     noteArray: "",
     numStrings: 0,
     numNotePositions: 0,
+    
     initialize: function() {
         console.log("FingerboardController.initialize() started...");
         
@@ -30,7 +47,7 @@ var FingerboardController = {
         
         // We're using MIDI pitch codes to identify pitches.
         // All the way from A0 to C8
-        for(var midiIndex = 21; midiIndex <= this.MIDI_CODE_END; midiIndex++) {
+        for(var midiIndex = this.MIDI_CODE_START; midiIndex <= this.MIDI_CODE_END; midiIndex++) {
             for(var basePitchIndex = 0; basePitchIndex < this.BASE_PITCH_LETTERS.length; basePitchIndex++) {
                 currentBasePitch = this.BASE_PITCH_LETTERS[basePitchIndex];
                 if(currentBasePitch.name === "C") {
@@ -50,6 +67,7 @@ var FingerboardController = {
                 }
             }
         }
+        
         console.log("FingerboardController.initialize() done!");
     },
     
@@ -113,6 +131,7 @@ var FingerboardController = {
         
         console.log("FingerboardController.initializeStringPitches() started...");
         console.info(pitchCodeArray);
+        
         for(var i = 0; i < pitchCodeArray.length; i++) {
             var stringNum = i + 1;
             var initPitch = pitchCodeArray[i];
@@ -124,6 +143,39 @@ var FingerboardController = {
             }
         }
         console.log("FingerboardController.initializeStringPitches() done!");
-    }
+    },
     
+    /**************************************************************************
+    *   SCALE/CHORD CALCULATIONS   ********************************************
+    **************************************************************************/
+    
+    getScaleChordPitches: function(scaleChordId, startingPitchId) {
+        for(var i = 0; i < FingerboardController.constants.SCALE_CHORD_TYPES.length; i++) {
+            var scaleChord = FingerboardController.constants.SCALE_CHORD_TYPES[i];
+            
+            console.log("interval stuff: " + scaleChord.name);
+            if(scaleChord.id === scaleChordId) {
+                // Intervals match!
+                var scaleChordPitches = [];
+                scaleChordPitches.push(this.getPitchFromMidiCode(startingPitchId));
+
+                var currentPitchId = startingPitchId;
+                
+                // Using the starting pitch Id, get all the pitches for the scale/chord
+                // Add those intervals to the startingId to arrive at the correct IDs for the whole scale/chord
+                for(var j = 0; j < scaleChord.intervals.length; j++) {
+                    currentPitchId += scaleChord.intervals[j];
+                    scaleChordPitches.push(this.getPitchFromMidiCode(currentPitchId));
+                }
+                
+                return scaleChordPitches;
+            }
+        }
+        
+        return null;
+    },
+    
+    isUsingFlatKey: function() {
+            
+    },
 };
