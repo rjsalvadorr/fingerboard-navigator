@@ -1,0 +1,49 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="../fonts/open_sans_stylesheet.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="../fonts/droid_serif_stylesheet.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="../fonts/crimson_stylesheet.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../css/index.css" />
+    <link rel="stylesheet" href="fingerboard.css" />
+
+    <script src="../js/jquery-2.1.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="roman-numerals.js"></script>
+    <title>Fingerboard Stuff</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <h2 class="text-center">Fingerboard Navigator</h2>
+            <hr>
+            <p>Write some blurbs here.</p>
+            <button type="button" class="btn btn-primary" id="button-design-minimalist">Minimalist style</button><br/>
+            <button type="button" class="btn btn-primary" id="button-highlight-open-strings">Highlight open strings</button><br/>
+            <button type="button" class="btn btn-primary" id="#button-highlight-perfect-intervals">Highlight perfect intervals</button><br/>
+            <label for="showOctave">Show octave:</label><input type="checkbox" name="showOctave" id="showOctave"><br/>
+            <label for="showOctave">Show octave:</label><input type="checkbox" name="showOctave" id="showOctave"><br/>
+        </div> 
+    </div>
+    <div class="container-fluid">
+        <div id="fretboard-container" class="clearfix">
+        </div>
+    </div>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/2.5.3/less.min.js"></script>
+    <script src="fingerboard-logic-util.js"></script>
+    <script src="fingerboard-exceptions.js"></script>
+    <script src="fingerboard-controller.js"></script>
+    <script src="fingerboard-view-controller.js"></script>
+    <script src="fingerboard-quiz.js"></script>
+</body>
+
+</html>
+
+<!--
+TODO LIST
+- new functionality: highlight perfect intervals from open strings
+- new functionality: highlight "n" interval from open strings
+-->

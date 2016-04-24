@@ -1,0 +1,86 @@
+body {
+  background: none;
+  background-color: #888;
+  color: #111;
+  font-family: sans-serif;
+}
+#fretboard-container {
+  position: relative;
+}
+.nut {
+  width: 30px;
+  display: inline-block;
+  background-color: #222;
+}
+.nut.minimalist {
+  background-color: white !important;
+  border-color: black !important;
+  border-style: solid;
+  border-width: 2px !important;
+  color: black !important;
+  border-right: none;
+}
+.fingerboard {
+  width: calc(100% - 30px);
+  display: inline-block;
+  background-color: #444;
+}
+.fingerboard.minimalist {
+  background-color: white !important;
+  border-color: black !important;
+  border-style: solid;
+  border-width: 2px !important;
+  color: black !important;
+}
+.fingerboard-unit {
+  display: inline-block;
+}
+.fingerboard-note-unit {
+  height: 30px;
+  position: relative;
+}
+.note-unit-label {
+  height: 24px;
+  width: 24px;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 15px;
+  border: 2px #000 solid;
+  background-color: #fff;
+  z-index: 300;
+}
+.nut .note-unit-label {
+  position: absolute;
+  top: 3px;
+  left: 2px;
+}
+.nut-unit {
+  display: inline-block;
+}
+.fretless .note-unit-label {
+  position: absolute;
+  top: 3px;
+  right: 0;
+}
+.fretted .note-unit-label {
+  position: relative;
+  top: 3px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.strings {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 200;
+}
+.string-unit {
+  height: 30px;
+  padding-top: 13px;
+}
+.string {
+  height: 3px;
+  background-color: #000;
+}
+/* THEMES */

@@ -1,0 +1,121 @@
+@fbUnitHeight: 30px;
+@noteLabelDiameter: 24px;
+@markerDiameter: 24px;
+
+body {
+    background: none;
+    background-color: #888;
+    color: #111;
+    font-family: sans-serif;
+}
+
+#fretboard-container {
+    position: relative;
+}
+
+.nut {
+    width: @fbUnitHeight;
+    display: inline-block;
+    background-color: #222;
+    
+    &.minimalist {
+        .minimalist();
+        border-right: none;
+    }
+}
+
+.fingerboard {
+    // Dunno how to use a LESS variable in calc. So this hardcodes the 30px value.
+    width: ~"calc(100% - 30px)";
+    display: inline-block;
+    background-color: #444;
+    
+    &.minimalist {
+        .minimalist();
+    }
+}
+
+.fingerboard-unit {
+    display: inline-block;
+}
+
+.fingerboard-note-unit {
+    height: @fbUnitHeight;
+    position: relative;
+}
+
+.note-unit-label {
+    height: @noteLabelDiameter;
+    width: @noteLabelDiameter;
+    border-radius: @noteLabelDiameter / 2;
+    text-align: center;
+    font-weight: bold;
+    font-size: 15px;
+    
+    border: 2px #000 solid;
+    background-color: #fff;
+    z-index: 300;
+}
+
+.nut {
+    .note-unit-label {
+        position: absolute;
+        top: (@fbUnitHeight - @noteLabelDiameter) / 2;
+        left: 2px;
+    }
+}
+
+.nut-unit {
+    display: inline-block;
+}
+
+.fretless {
+    .note-unit-fret {
+        
+    }
+
+    .note-unit-label {
+        position: absolute;
+        top: (@fbUnitHeight - @noteLabelDiameter) / 2;
+        right: 0;
+    }
+}
+
+.fretted {
+    .note-unit-fret {
+        
+    }
+        
+    .note-unit-label {
+        position: relative;
+        top: (@fbUnitHeight - @noteLabelDiameter) / 2;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+.strings {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 200;
+}
+
+.string-unit {
+    height: @fbUnitHeight;
+    padding-top: 13px;
+}
+
+.string {
+    height: 3px;
+    background-color: #000;
+}
+
+/* THEMES */
+.minimalist() {
+    background-color: white !important;
+    border-color: black !important;
+    border-style: solid;
+    border-width: 2px !important;
+    color: black !important;
+}
