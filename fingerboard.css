@@ -40,19 +40,24 @@ body {
   position: relative;
 }
 .note-unit-label {
-  height: 24px;
-  width: 24px;
-  border-radius: 12px;
+  height: 28px;
+  width: 28px;
+  border-radius: 14px;
   text-align: center;
   font-weight: bold;
-  font-size: 15px;
+  font-size: 16px;
   border: 2px #000 solid;
   background-color: #fff;
   z-index: 300;
 }
+.chord-superscript {
+  font-size: 11px;
+  vertical-align: top;
+  letter-spacing: -2px;
+}
 .nut .note-unit-label {
   position: absolute;
-  top: 3px;
+  top: 1px;
   left: 2px;
 }
 .nut-unit {
@@ -60,12 +65,12 @@ body {
 }
 .fretless .note-unit-label {
   position: absolute;
-  top: 3px;
+  top: 1px;
   right: 0;
 }
 .fretted .note-unit-label {
   position: relative;
-  top: 3px;
+  top: 1px;
   margin-left: auto;
   margin-right: auto;
 }

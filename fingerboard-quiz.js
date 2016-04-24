@@ -1,3 +1,8 @@
+/*
+    Controls the UI directly. Will typically call methods of FingerboardViewController to make things happen.
+    Holds values related to the display.
+*/
+
 var FingerboardQuiz = {
     PRESET_CELLO: [
             // REMEMBER, STRING ENUMERATION STARTS FROM HIGHEST PITCH
@@ -48,7 +53,7 @@ var FingerboardQuiz = {
         }
     },
     renderError: function(errorMessage) {
-    
+        
     },
     renderControls: function(targetSelector) {
         var $controls = FingerboardViewController.renderControls();
@@ -60,16 +65,15 @@ $(document).ready(function() {
     // Note positions include the nut!!!
     FingerboardQuiz.initialize(4, 22, false, FingerboardQuiz.PRESET_CELLO);
     FingerboardQuiz.renderFingerboard("#fretboard-container");
-    
     FingerboardQuiz.renderControls("#fretboard-controls-container");
     
     // TESTING!!!
     FingerboardViewController.getFbSectionPercentages(12);
-        
-    //
+    
     $("#button-design-minimalist").click(function() {
         FingerboardViewController.changeFbDesign("minimalist");    
     });
+    
     $("#button-highlight-open-strings").click(function() {
         //TODO:
         // -create new function in 
@@ -78,25 +82,31 @@ $(document).ready(function() {
         FingerboardViewController.highlightAllInstancesOfPitch(43, "#bbffbb");
         FingerboardViewController.highlightAllInstancesOfPitch(36, "#ffffbb");
     });
+    
     $("#button-highlight-perfect-intervals").click(function() {
         
     });
     
     $("#button-highlight-chord").click(function() {
-        var chordId = parseInt($("#chord-select").val());
-        var startingPitchId = parseInt($("#pitch-select").val());
+        var chordSymbol = $("#chord-select").val();
+        var startingPitch = $("#pitch-select").val();
         
-        FingerboardViewController.highlightScaleOrChord(chordId, startingPitchId);
+        var e = document.getElementById("pitch-select");
+        
+        var chordSelect = document.getElementById("chord-select");
+        var type = chordSelect.options[chordSelect.selectedIndex].dataset.type;
+        
+        FingerboardViewController.highlightScaleOrChord(type, chordSymbol, startingPitch);
     });
     
     $("#button-highlight-scale").click(function() {
-        var scaleId = parseInt($("#scale-select").val());
-        var startingPitchId = parseInt($("#pitch-select").val());
+        var scaleSymbol = $("#scale-select").val();
+        var startingPitch = $("#pitch-select").val();
         
-        FingerboardViewController.highlightScaleOrChord(scaleId, startingPitchId);
+        var scaleSelect = document.getElementById("scale-select");
+        var type = scaleSelect.options[scaleSelect.selectedIndex].dataset.type;
+        
+        FingerboardViewController.highlightScaleOrChord(type, scaleSymbol, startingPitch);
     });
     
-    
-    // HAX
-    FingerboardViewController.renderControls();
 });

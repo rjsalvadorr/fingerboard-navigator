@@ -1,22 +1,22 @@
 /*
-    Controls and encapsulates fingerboard logic, 
+    Controls and encapsulates fingerboard logic.
 */
 var FingerboardController = {
     constants: {
         SCALE_CHORD_TYPES: [
             // Interval numbers = steps upwards.
-            {quality: "MINOR", type: "SCALE", name: "Minor scale", id: 11, intervals: [2, 1, 2, 2, 1, 2]},
-            {quality: "MAJOR", type: "SCALE", name: "Major scale", id: 12, intervals: [2, 2, 1, 2, 2, 2]},
+            {tSymbol: "minor", quality: "MINOR", type: "SCALE", name: "Minor scale", id: 11, intervals: [2, 1, 2, 2, 1, 2]},
+            {tSymbol: "major", quality: "MAJOR", type: "SCALE", name: "Major scale", id: 12, intervals: [2, 2, 1, 2, 2, 2]},
 
-            {quality: "MAJOR", type: "CHORD", name: "Major triad", id: 21, intervals: [4, 3]},
-            {quality: "MINOR", type: "CHORD", name: "Minor triad", id: 22, intervals: [3, 4]},
-            {quality: "DIMINISHED", type: "CHORD", name: "Diminished triad", id: 23, intervals: [3, 3]},
+            {tSymbol: "M", quality: "MAJOR", type: "CHORD", name: "Major triad", id: 21, intervals: [4, 3]},
+            {tSymbol: "m", quality: "MINOR", type: "CHORD", name: "Minor triad", id: 22, intervals: [3, 4]},
+            //{quality: "DIMINISHED", type: "CHORD", name: "Diminished triad", id: 23, intervals: [3, 3]},
 
-            {quality: "MAJOR", type: "CHORD", name: "Major 7th", id: 31, intervals: [4, 3, 4]},
-            {quality: "MINOR", type: "CHORD", name: "Minor 7th", id: 32, intervals: [3, 4, 3]},
-            {quality: "DIMINISHED", type: "CHORD", name: "Half-diminished 7th", id: 33, intervals: [3, 3, 4]},
-            {quality: "DIMINISHED", type: "CHORD", name: "Diminished 7th", id: 34, intervals: [3, 3, 3]}
-        ],
+            //{quality: "DIMINISHED", type: "CHORD", name: "Half-diminished 7th", id: 33, intervals: [3, 3, 4]},
+            //{quality: "DIMINISHED", type: "CHORD", name: "Diminished 7th", id: 34, intervals: [3, 3, 3]}
+            {tSymbol: "maj7", quality: "MAJOR", type: "CHORD", name: "Major 7th", id: 31, intervals: [4, 3, 4]},
+            {tSymbol: "min7", quality: "MINOR", type: "CHORD", name: "Minor 7th", id: 32, intervals: [3, 4, 3]}
+        ]
     },
     BASE_PITCH_LETTERS: [
         {name: "A", flatName: "", sharpName: ""},
@@ -149,12 +149,12 @@ var FingerboardController = {
     *   SCALE/CHORD CALCULATIONS   ********************************************
     **************************************************************************/
     
-    getScaleChordPitches: function(scaleChordId, startingPitchId) {
+    getScaleChordPitches: function(scaleChordSymbol, startingPitchId) {
         for(var i = 0; i < FingerboardController.constants.SCALE_CHORD_TYPES.length; i++) {
             var scaleChord = FingerboardController.constants.SCALE_CHORD_TYPES[i];
             
             console.log("interval stuff: " + scaleChord.name);
-            if(scaleChord.id === scaleChordId) {
+            if(scaleChord.tSymbol === scaleChordSymbol) {
                 // Intervals match!
                 var scaleChordPitches = [];
                 scaleChordPitches.push(this.getPitchFromMidiCode(startingPitchId));
@@ -175,7 +175,28 @@ var FingerboardController = {
         return null;
     },
     
-    isUsingFlatKey: function() {
-            
-    },
+    getChordName: function(scaleChordId, startingPitchId) {
+        var chordName = "";
+        for(var i = 0; i < FingerboardController.constants.SCALE_CHORD_TYPES.length; i++) {
+            var scaleChord = FingerboardController.constants.SCALE_CHORD_TYPES[i];
+            if(scaleChord.id === scaleChordId) {
+                // Intervals match!
+                var scaleChordPitches = [];
+                chordName += this.getPitchFromMidiCode(startingPitchId);
+
+                var currentPitchId = startingPitchId;
+                
+                // Using the starting pitch Id, get all the pitches for the scale/chord
+                // Add those intervals to the startingId to arrive at the correct IDs for the whole scale/chord
+                for(var j = 0; j < scaleChord.intervals.length; j++) {
+                    currentPitchId += scaleChord.intervals[j];
+                    scaleChordPitches.push(this.getPitchFromMidiCode(currentPitchId));
+                }
+                
+                return scaleChordPitches;
+            }
+        }
+        
+        return null;
+    }
 };

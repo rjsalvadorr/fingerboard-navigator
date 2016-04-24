@@ -8,8 +8,32 @@ var FingerboardViewController = {
             return Math.pow(2, 1 / 12);
         },
         NUM_PITCHES: 12,
-        DESIGN_CODES: ["minimalist", "guitar", "violin"]
+        DESIGN_CODES: ["minimalist", "guitar", "violin"],
+        PITCH_CHOICES: [
+            "Cb4",
+            "C4",
+            "C#4",
+            "Db4",
+            "D4",
+            "D#4",
+            "Eb4",
+            "E4",
+            "E#4",
+            "Fb4",
+            "F4",
+            "F#4",
+            "Gb4",
+            "G4",
+            "G#4",
+            "Ab4",
+            "A4",
+            "A#4",
+            "Bb4",
+            "B4",
+            "B#4",
+        ]
     },
+    usingSharpNames: true,
     initialize: function() {
         console.log("FingerboardViewController.initialize() started...");
         FingerboardController.initialize();
@@ -18,7 +42,7 @@ var FingerboardViewController = {
     
     
     /**************************************************************************
-    *   DOM GENERATION   ******************************************************
+    *   RENDERING FINGERBOARD   ***********************************************
     **************************************************************************/
     
     
@@ -126,6 +150,8 @@ var FingerboardViewController = {
         if(pitchName == "") {
             pitchName = pitch.sharpName;
         }
+        var tNote = teoria.note(pitchName)
+        pitchName = tNote.name().toUpperCase() + "<span class=\"chord-superscript\">" + tNote.accidental() + "</span>";
         
         $fbNoteUnitLabel.html(pitchName);
         $fbNoteUnit[0].dataset.pitchCode = pitch.code;
@@ -165,6 +191,18 @@ var FingerboardViewController = {
                 text: optionList[i].option,
                 value: optionList[i].value
             });
+            
+            if(optionList[i].extras != null && typeof(optionList[i].extras) != "undefined") {
+                var optionExtrasArray = optionList[i].extras.split(";");
+                
+                for(var j = 0; j < optionExtrasArray.length; j++) {
+                    var extraPair = optionExtrasArray[j].split(":");
+                    var dataAttrName = "data-" + extraPair[0];
+                    
+                    currentOptionElement.attr(dataAttrName, extraPair[1]);
+                }
+            }
+            
             $selectElement.append(currentOptionElement);
         }
         
@@ -187,29 +225,28 @@ var FingerboardViewController = {
         var basePitchId = 69; // A440
         
         // initializing available notes
-        for(var i = 0; i < FingerboardController.BASE_PITCH_LETTERS.length; i++) {
-            var currentPitchName = FingerboardController.BASE_PITCH_LETTERS[i];
-            var optionTitle = 0;
-            var pitchId = basePitchId + i;
+        for(var i = 0; i < this.constants.PITCH_CHOICES.length; i++) {
+            var currentPitchName = this.constants.PITCH_CHOICES[i];
             
-            if(currentPitchName.name === "") {
-                optionTitle = currentPitchName.flatName + " / " + currentPitchName.sharpName;
-            } else {
-                optionTitle = currentPitchName.name;
-            }
+            var tNote = teoria.note(currentPitchName);
+            var displayName = tNote.toString(true);
+            displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
             
-            var newOptionValuePair = {option: optionTitle, value: pitchId};
+            var newOptionValuePair = {option: displayName, value: tNote.toString(false)};
+            
             noteOptions.push(newOptionValuePair);
         }
     
         // initializing available scale/chord types
         for(var i = 0; i < FingerboardController.constants.SCALE_CHORD_TYPES.length; i++) {
             currentScaleChordType = FingerboardController.constants.SCALE_CHORD_TYPES[i];
-            var newOptionValuePair = {option: currentScaleChordType.name, value: currentScaleChordType.id};
+            var newOptionValuePair = {option: currentScaleChordType.name, value: currentScaleChordType.tSymbol, extras: "chord-scale-quality:" + currentScaleChordType.quality + ";"};
     
             if(currentScaleChordType.type === "SCALE") {
+                newOptionValuePair.extras += "type:SCALE;"
                 scaleOptions.push(newOptionValuePair);
             } else if(currentScaleChordType.type === "CHORD") {
+                newOptionValuePair.extras += "type:CHORD;"
                 chordOptions.push(newOptionValuePair);
             }
         }
@@ -231,7 +268,7 @@ var FingerboardViewController = {
         $controlElement.append(chordSelect);
         $controlElement.append("<button type=\"button\" id=\"button-highlight-chord\" class=\"btn btn-primary fingerboard-control-button\">Highlight Chord</button>");
         
-        $controlElement.append("<button class=\"fingerboard-control-button\">Scale Select: </button>");
+        $controlElement.append("<label class=\"fingerboard-control-button\">Scale Select: </label>");
         $controlElement.append(scaleSelect);
         $controlElement.append("<button type=\"button\" id=\"button-highlight-scale\" class=\"btn btn-primary fingerboard-control-button\">Highlight Scale</button>");
         
@@ -281,15 +318,25 @@ var FingerboardViewController = {
         console.log("FingerboardViewController.highlightAllInstancesOfPitch() done!");
     },
     
-    highlightScaleOrChord: function(scaleChordId, startingPitch) {
-        var pitchesToHighlight = FingerboardController.getScaleChordPitches(scaleChordId, startingPitch);
+    highlightScaleOrChord: function(type, scaleChord, startingPitch) {
+        var tNote = teoria.note(startingPitch);
+        var pitchesToHighlight = FingerboardController.getScaleChordPitches(scaleChord, tNote.midi());
         var colour;
+        var tChordOrScale;
         
         this.hideAllLabels();
         
+        if(type === "CHORD") {
+            tChordOrScale = tNote.chord(scaleChord);
+        } else if(type === "SCALE") {
+            tChordOrScale = tNote.scale(scaleChord);
+        }
+        
+        this.renamePitches(tChordOrScale);
+        
         for(var i = 0; i < pitchesToHighlight.length; i++) {
             if(i == 0) {
-                colour = "#ff3333"
+                colour = "#ff6666"
                 this.highlightAllInstancesOfPitch(pitchesToHighlight[i].code, colour);
             }
             
@@ -312,10 +359,26 @@ var FingerboardViewController = {
     showAllInstancesOfPitch: function(pitchCode) {
         var pitchCodesToHighlight = this.getAllInstancesOfPitch(pitchCode);
         
-        
         for(var i = 0; i < pitchCodesToHighlight.length; i++) {
             var $fbNoteUnit = $(".fingerboard-note-unit[data-pitch-code=\"" + pitchCodesToHighlight[i] + "\"] .note-unit-label");
             $fbNoteUnit.css("display", "block");
+        }
+    },
+    renamePitches: function(tChordOrScale) {
+        // for each pitch in the teoria scale, rename it to the right value
+        var tNotes = tChordOrScale.notes();
+        var noteName;
+        var $fbNoteUnitLabel;
+        
+        for(var i = 0; i < tNotes.length; i++) {
+            /*noteName = tNotes[i].toString(true);*/
+            noteName = tNotes[i].name().toUpperCase() + "<span class=\"chord-superscript\">" + tNotes[i].accidental() + "</span>";
+            var targetPitches = this.getAllInstancesOfPitch(tNotes[i].midi());
+            
+            for(var j = 0; j < targetPitches.length; j++) {
+                $fbNoteUnitLabel = $(".fingerboard-note-unit[data-pitch-code=\"" + targetPitches[j] + "\"] .note-unit-label");
+                $fbNoteUnitLabel.html(noteName);
+            }
         }
     },
     
@@ -337,6 +400,15 @@ var FingerboardViewController = {
         
         console.log("FingerboardViewController.changeFbDesign() done!");
     },
+    
+    
+    /**************************************************************************
+    *   LOGIC FOR CONTROLS   **************************************************
+    **************************************************************************/
+    
+    // next function - hide or show various pitch <option> based on currently selected chord/scale type.
+    // 
+    
     
     
     /**************************************************************************
