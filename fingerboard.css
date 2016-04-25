@@ -94,6 +94,14 @@ body {
   height: 3px;
   background-color: #000;
 }
+#text-current-instrument {
+  font-size: 36px;
+  font-weight: bold;
+  font-family: 'open_sansbold', Arial, sans-serif;
+}
+#title-current-instrument {
+  display: inline;
+}
 /* HIGHLIGHTING */
 .highlight-root {
   background-color: #ff6666;

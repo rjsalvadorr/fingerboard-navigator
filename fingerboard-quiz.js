@@ -6,16 +6,22 @@
 var FingerboardQuiz = {
     numStrings: 0,
     numNotePositions: 0,
+    fretted: 0,
+    initialStringPitches: 0,
+    instrumentName: 0,
+    
+    $fingerboardInfoContainer: 0,
     $fingerboardContainer: 0,
     $fingerboardControlsContainer: 0,
-    fretted: 0,
+    
     accidentalMode: 0,
-    initialStringPitches: 0,
+    
     initialize: function(presetObj) {
         this.numStrings = presetObj.numStrings;
         this.numNotePositions = presetObj.numPositions;
         this.fretted = presetObj.fretted;
         this.initialStringPitches = presetObj.startingPitches;
+        this.instrumentName = presetObj.name;
         
         try {
             FingerboardViewController.initialize();
@@ -27,7 +33,7 @@ var FingerboardQuiz = {
         try {
             // create fingerboard HTML
             this.$fingerboardContainer = $(targetSelector);
-
+            
             var $nut = FingerboardViewController.createNut(this.numStrings);
             $nut.appendTo(this.$fingerboardContainer);
 
@@ -49,12 +55,19 @@ var FingerboardQuiz = {
     renderError: function(errorMessage) {
         
     },
+    renderInfo: function(targetSelector) {
+        this.$fingerboardInfoContainer = $(targetSelector);
+        
+        var instrumentNameString = "<p class=\"generated-text\"><h1 id=\"title-current-instrument\">Current Instrument: </h1><span id=\"text-current-instrument\">" + this.instrumentName + "</span></p>";
+        this.$fingerboardInfoContainer.append(instrumentNameString);
+    },
     renderControls: function(targetSelector) {
         this.$fingerboardControlsContainer = $(targetSelector);
         var $controls = FingerboardViewController.renderControls();
         $controls.appendTo(this.$fingerboardControlsContainer);
     },
     clearQuiz: function() {
+        this.$fingerboardInfoContainer.empty();
         this.$fingerboardContainer.empty();
     }
 };
@@ -64,6 +77,7 @@ $(document).ready(function() {
     FingerboardQuiz.initialize(FingerboardViewController.constants.PRESETS.GUITAR);
     FingerboardQuiz.renderFingerboard("#fretboard-container");
     FingerboardQuiz.renderControls("#fretboard-controls-container");
+    FingerboardQuiz.renderInfo("#fretboard-info-container");
     
     // TESTING!!!
     FingerboardViewController.getFbSectionPercentages(12);
@@ -115,5 +129,6 @@ $(document).ready(function() {
         
         FingerboardQuiz.initialize(FingerboardViewController.constants.PRESETS[selectedPreset]);
         FingerboardQuiz.renderFingerboard("#fretboard-container");
+        FingerboardQuiz.renderInfo("#fretboard-info-container");
     });
 });

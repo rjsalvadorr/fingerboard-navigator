@@ -48,7 +48,7 @@ var FingerboardViewController = {
                 ]
             },
             GUITAR: {
-                name: "Guitar",
+                name: "Guitar (Standard tuning)",
                 numStrings: 6,
                 numPositions: 20,
                 fretted: true,
