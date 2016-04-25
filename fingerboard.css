@@ -68,11 +68,17 @@ body {
   top: 1px;
   right: 0;
 }
+.fretted .note-unit-fret {
+  width: 2px;
+  height: 100%;
+  background-color: #dddddd;
+  position: absolute;
+  right: 0;
+}
 .fretted .note-unit-label {
-  position: relative;
+  position: absolute;
   top: 1px;
-  margin-left: auto;
-  margin-right: auto;
+  left: calc(50% -  14px);
 }
 .strings {
   position: absolute;

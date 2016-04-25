@@ -4,24 +4,18 @@
 */
 
 var FingerboardQuiz = {
-    PRESET_CELLO: [
-            // REMEMBER, STRING ENUMERATION STARTS FROM HIGHEST PITCH
-            57, // A3
-            50, // D3
-            43, // G2
-            36 // C2
-    ],
     numStrings: 0,
     numNotePositions: 0,
     $fingerboardContainer: 0,
+    $fingerboardControlsContainer: 0,
     fretted: 0,
     accidentalMode: 0,
     initialStringPitches: 0,
-    initialize: function(numStr, numNotePos, isFretted, initStringPitches) {
-        this.numStrings = numStr;
-        this.numNotePositions = numNotePos;
-        this.fretted = isFretted;
-        this.initialStringPitches = initStringPitches;
+    initialize: function(presetObj) {
+        this.numStrings = presetObj.numStrings;
+        this.numNotePositions = presetObj.numPositions;
+        this.fretted = presetObj.fretted;
+        this.initialStringPitches = presetObj.startingPitches;
         
         try {
             FingerboardViewController.initialize();
@@ -56,14 +50,18 @@ var FingerboardQuiz = {
         
     },
     renderControls: function(targetSelector) {
+        this.$fingerboardControlsContainer = $(targetSelector);
         var $controls = FingerboardViewController.renderControls();
-        $controls.appendTo($(targetSelector));
+        $controls.appendTo(this.$fingerboardControlsContainer);
+    },
+    clearQuiz: function() {
+        this.$fingerboardContainer.empty();
     }
 };
 
 $(document).ready(function() {
     // Note positions include the nut!!!
-    FingerboardQuiz.initialize(4, 22, false, FingerboardQuiz.PRESET_CELLO);
+    FingerboardQuiz.initialize(FingerboardViewController.constants.PRESETS.GUITAR);
     FingerboardQuiz.renderFingerboard("#fretboard-container");
     FingerboardQuiz.renderControls("#fretboard-controls-container");
     
@@ -77,10 +75,10 @@ $(document).ready(function() {
     $("#button-highlight-open-strings").click(function() {
         //TODO:
         // -create new function in 
-        FingerboardViewController.highlightAllInstancesOfPitch(57, "#bbbbff");
+        /*FingerboardViewController.highlightAllInstancesOfPitch(57, "#bbbbff");
         FingerboardViewController.highlightAllInstancesOfPitch(50, "#ffbbbb");
         FingerboardViewController.highlightAllInstancesOfPitch(43, "#bbffbb");
-        FingerboardViewController.highlightAllInstancesOfPitch(36, "#ffffbb");
+        FingerboardViewController.highlightAllInstancesOfPitch(36, "#ffffbb");*/
     });
     
     $("#button-highlight-perfect-intervals").click(function() {
@@ -109,4 +107,13 @@ $(document).ready(function() {
         FingerboardViewController.highlightScaleOrChord(type, scaleSymbol, startingPitch);
     });
     
+    
+    $("#button-change-preset").click(function() {
+        var selectedPreset = $("#preset-select").val();
+        
+        FingerboardQuiz.clearQuiz();
+        
+        FingerboardQuiz.initialize(FingerboardViewController.constants.PRESETS[selectedPreset]);
+        FingerboardQuiz.renderFingerboard("#fretboard-container");
+    });
 });

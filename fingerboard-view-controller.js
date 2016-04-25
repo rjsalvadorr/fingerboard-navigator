@@ -30,8 +30,49 @@ var FingerboardViewController = {
             "A#4",
             "Bb4",
             "B4",
-            "B#4",
-        ]
+            "B#4"
+        ],
+        PRESETS: {
+            CELLO: {
+                name: "Violoncello",
+                numStrings: 4,
+                numPositions: 20,
+                fretted: false,
+                startingPitches: [
+                    // REMEMBER, STRING ENUMERATION STARTS FROM HIGHEST PITCH
+                    57, // A3
+                    50, // D3
+                    43, // G2
+                    36 // C2
+                ]
+            },
+            GUITAR: {
+                name: "Guitar",
+                numStrings: 6,
+                numPositions: 20,
+                fretted: true,
+                startingPitches: [
+                    64, // E4
+                    59, // B3
+                    55, // G3
+                    50, // D3
+                    45, // A3
+                    40 // E2
+                ]
+            },
+            VIOLIN: {
+                name: "Violin",
+                numStrings: 4,
+                numPositions: 20,
+                fretted: false,
+                startingPitches: [
+                    76, // E5
+                    69, // A4
+                    62, // D4
+                    55 // G3
+                ]
+            },
+        }
     },
     usingSharpNames: true,
     initialize: function() {
@@ -216,13 +257,45 @@ var FingerboardViewController = {
     renderControls: function() {
         var stringOptions = [];
         
+        var presetOptions = [];
         var noteOptions = [];
         
         var chordOptions = [];
         var scaleOptions = [];
         
+        
         var currentScaleChordType = 0;
         var basePitchId = 69; // A440
+        
+        
+        // initializing available presets
+        for(var key in this.constants.PRESETS) {
+            // skip loop if the property is from prototype
+            if (!this.constants.PRESETS.hasOwnProperty(key)) continue;
+
+            var obj = this.constants.PRESETS[key];
+            for (var prop in obj) {
+                // skip loop if the property is from prototype
+                if(!obj.hasOwnProperty(prop)) continue;
+
+                // your code
+                //alert(prop + " = " + obj[prop]);
+                
+            }
+            
+            var newOptionValuePair = {option: obj["name"], value: key};
+            presetOptions.push(newOptionValuePair);
+            
+            /*var currentPitchName = this.constants.PITCH_CHOICES[i];
+            
+            var tNote = teoria.note(currentPitchName);
+            var displayName = tNote.toString(true);
+            displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+            
+            var newOptionValuePair = {option: displayName, value: tNote.toString(false)};
+            
+            noteOptions.push(newOptionValuePair);*/
+        }
         
         // initializing available notes
         for(var i = 0; i < this.constants.PITCH_CHOICES.length; i++) {
@@ -251,7 +324,9 @@ var FingerboardViewController = {
             }
         }
     
+        var presetSelect = this.createSelectFromList("preset-select", "preset-select", "dynamic-select", presetOptions);
         var pitchSelect = this.createSelectFromList("pitch-select", "pitch-select", "dynamic-select", noteOptions);
+        
         var chordSelect = this.createSelectFromList("chord-select", "chord-select", "dynamic-select", chordOptions);
         var scaleSelect = this.createSelectFromList("scale-select", "scale-select", "dynamic-select", scaleOptions);
         
@@ -260,6 +335,10 @@ var FingerboardViewController = {
             name: "fingerboard-controls",
           "class": "generated-element",
         });
+        
+        $controlElement.append("<label class=\"fingerboard-control-label\">Presets: </label>");
+        $controlElement.append(presetSelect);
+        $controlElement.append("<button type=\"button\" id=\"button-change-preset\" class=\"btn btn-primary fingerboard-control-button\">Change Preset</button>");
         
         $controlElement.append("<label class=\"fingerboard-control-label\">Pitch: </label>");
         $controlElement.append(pitchSelect);

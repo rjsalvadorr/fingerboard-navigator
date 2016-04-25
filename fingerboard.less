@@ -1,6 +1,8 @@
 @fbUnitHeight: 30px;
 @noteLabelDiameter: 28px;
+@noteLabelRadius: @noteLabelDiameter / 2;
 @markerDiameter: 24px;
+@fretColour: #dddddd;
 
 body {
     background: none;
@@ -89,14 +91,17 @@ body {
 
 .fretted {
     .note-unit-fret {
-        
+        width: 2px;
+        height: 100%;
+        background-color: @fretColour;
+        position: absolute;
+        right: 0;
     }
         
     .note-unit-label {
-        position: relative;
+        position: absolute;
         top: (@fbUnitHeight - @noteLabelDiameter) / 2;
-        margin-left: auto;
-        margin-right: auto;
+        left: calc(~"50% - " @noteLabelRadius);
     }
 }
 
