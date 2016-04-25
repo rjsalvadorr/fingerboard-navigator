@@ -94,4 +94,17 @@ body {
   height: 3px;
   background-color: #000;
 }
+/* HIGHLIGHTING */
+.highlight-root {
+  background-color: #ff6666;
+}
+.highlight-third {
+  background-color: #ffaaaa;
+}
+.highlight-fifth {
+  background-color: #ff8888;
+}
+.highlight-seventh {
+  background-color: #ffcccc;
+}
 /* THEMES */

@@ -33,6 +33,7 @@ var FingerboardViewController = {
             "B#4"
         ],
         PRESETS: {
+            // TODO: use teoria notes for the starting pitches!
             CELLO: {
                 name: "Violoncello",
                 numStrings: 4,
@@ -60,10 +61,24 @@ var FingerboardViewController = {
                     40 // E2
                 ]
             },
+            GUITAR_NST: {
+                name: "Guitar (NST/Fifths tuning)",
+                numStrings: 6,
+                numPositions: 20,
+                fretted: true,
+                startingPitches: [
+                    67, // G4
+                    64, // E4
+                    57, // A3
+                    50, // D3
+                    43, // G2
+                    36 // C2
+                ]
+            },
             VIOLIN: {
                 name: "Violin",
                 numStrings: 4,
-                numPositions: 20,
+                numPositions: 19,
                 fretted: false,
                 startingPitches: [
                     76, // E5
@@ -72,6 +87,18 @@ var FingerboardViewController = {
                     55 // G3
                 ]
             },
+            UKULELE: {
+                name: "Ukulele",
+                numStrings: 4,
+                numPositions: 15,
+                fretted: true,
+                startingPitches: [
+                    69, // A4
+                    64, // E4
+                    60, // C4
+                    67 // G4
+                ]
+            }
         }
     },
     usingSharpNames: true,
@@ -202,10 +229,12 @@ var FingerboardViewController = {
     reloadPitches: function(initialPitches, numNotePositions) {
         console.log("FingerboardViewController.reloadPitches() started...");
         FingerboardController.initializeStringPitches(initialPitches, numNotePositions);
+        
         var noteArray = FingerboardController.noteArray;
         if(noteArray.length == 0) {
             throw new FingerboardExceptions.ArrayEmptyException("FingerboardController's noteArray is empty!");
         }
+        
         for(var stringIndex = 1; stringIndex < noteArray.length; stringIndex++) {
             var notePositionsInString = noteArray[stringIndex];
             for(var notePosIndex = 0; notePosIndex < notePositionsInString.length; notePosIndex++) {
@@ -274,27 +303,16 @@ var FingerboardViewController = {
             if (!this.constants.PRESETS.hasOwnProperty(key)) continue;
 
             var obj = this.constants.PRESETS[key];
-            for (var prop in obj) {
+            /*for (var prop in obj) {
                 // skip loop if the property is from prototype
                 if(!obj.hasOwnProperty(prop)) continue;
 
                 // your code
-                //alert(prop + " = " + obj[prop]);
-                
-            }
+                alert(prop + " = " + obj[prop]);
+            }*/
             
             var newOptionValuePair = {option: obj["name"], value: key};
             presetOptions.push(newOptionValuePair);
-            
-            /*var currentPitchName = this.constants.PITCH_CHOICES[i];
-            
-            var tNote = teoria.note(currentPitchName);
-            var displayName = tNote.toString(true);
-            displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
-            
-            var newOptionValuePair = {option: displayName, value: tNote.toString(false)};
-            
-            noteOptions.push(newOptionValuePair);*/
         }
         
         // initializing available notes
@@ -339,17 +357,21 @@ var FingerboardViewController = {
         $controlElement.append("<label class=\"fingerboard-control-label\">Presets: </label>");
         $controlElement.append(presetSelect);
         $controlElement.append("<button type=\"button\" id=\"button-change-preset\" class=\"btn btn-primary fingerboard-control-button\">Change Preset</button>");
+        $controlElement.append("<br>");
         
         $controlElement.append("<label class=\"fingerboard-control-label\">Pitch: </label>");
         $controlElement.append(pitchSelect);
+        $controlElement.append("<br>");
         
         $controlElement.append("<label class=\"fingerboard-control-label\">Chord Select: </label>");
         $controlElement.append(chordSelect);
         $controlElement.append("<button type=\"button\" id=\"button-highlight-chord\" class=\"btn btn-primary fingerboard-control-button\">Highlight Chord</button>");
+        $controlElement.append("<br>");
         
         $controlElement.append("<label class=\"fingerboard-control-button\">Scale Select: </label>");
         $controlElement.append(scaleSelect);
         $controlElement.append("<button type=\"button\" id=\"button-highlight-scale\" class=\"btn btn-primary fingerboard-control-button\">Highlight Scale</button>");
+        $controlElement.append("<br>");
         
         return $controlElement;
     },
@@ -386,13 +408,13 @@ var FingerboardViewController = {
     
     highlightPitch: function(pitchCode) {},
     
-    highlightAllInstancesOfPitch: function(pitchCode, rgbColour) {
+    highlightAllInstancesOfPitch: function(pitchCode, highlightClass) {
         console.log("FingerboardViewController.highlightAllInstancesOfPitch() started...");
         var pitchCodesToHighlight = this.getAllInstancesOfPitch(pitchCode);
         
         for(var i = 0; i < pitchCodesToHighlight.length; i++) {
             var $fbNoteUnit = $(".fingerboard-note-unit[data-pitch-code=\"" + pitchCodesToHighlight[i] + "\"] .note-unit-label");
-            $fbNoteUnit.css("background-color", rgbColour);
+            $fbNoteUnit.addClass(highlightClass);
         }
         console.log("FingerboardViewController.highlightAllInstancesOfPitch() done!");
     },
@@ -402,6 +424,7 @@ var FingerboardViewController = {
         var pitchesToHighlight = FingerboardController.getScaleChordPitches(scaleChord, tNote.midi());
         var colour;
         var tChordOrScale;
+        var currentMidiCode
         
         this.hideAllLabels();
         
@@ -414,25 +437,36 @@ var FingerboardViewController = {
         this.renamePitches(tChordOrScale);
         
         for(var i = 0; i < pitchesToHighlight.length; i++) {
-            if(i == 0) {
-                colour = "#ff6666"
-                this.highlightAllInstancesOfPitch(pitchesToHighlight[i].code, colour);
+            currentMidiCode = pitchesToHighlight[i].code;
+            
+            if(currentMidiCode == tChordOrScale.get("first").midi()) {
+                highlightClass = "highlight-root"
+            } else if(currentMidiCode == tChordOrScale.get("third").midi()) {
+                highlightClass = "highlight-third";
+            } else if(currentMidiCode == tChordOrScale.get("fifth").midi()) {
+                highlightClass = "highlight-fifth";
+            } else if(currentMidiCode == tChordOrScale.get("seventh").midi()) {
+                highlightClass = "highlight-seventh";
+            } else {
+                highlightClass = "";
             }
             
-            this.showAllInstancesOfPitch(pitchesToHighlight[i].code);
+            this.highlightAllInstancesOfPitch(currentMidiCode, highlightClass);
+            
+            this.showAllInstancesOfPitch(currentMidiCode);
         }
     },
     
     clearHighlighting: function() {
         var $fbNoteUnitLabels = $(".fingerboard-note-unit .note-unit-label");
         $fbNoteUnitLabels.css("display", "block");
-        $fbNoteUnitLabels.css("background-color", "#ffffff");
+        $fbNoteUnitLabels.removeClass("highlight-root highlight-third highlight-fifth highlight-seventh");
     },
     
     hideAllLabels: function() {
         var $fbNoteUnitLabels = $(".fingerboard-note-unit .note-unit-label");
         $fbNoteUnitLabels.css("display", "none");
-        $fbNoteUnitLabels.css("background-color", "#ffffff");
+        $fbNoteUnitLabels.removeClass("highlight-root highlight-third highlight-fifth highlight-seventh");
     },
     
     showAllInstancesOfPitch: function(pitchCode) {
