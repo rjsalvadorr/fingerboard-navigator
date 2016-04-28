@@ -34,7 +34,7 @@ var FingerboardQuiz = {
             // create fingerboard HTML
             this.$fingerboardContainer = $(targetSelector);
             
-            var $nut = FingerboardViewController.createNut(this.numStrings);
+            var $nut = FingerboardViewController.createNut(this.numStrings, this.fretted);
             $nut.appendTo(this.$fingerboardContainer);
 
             var $fingerboard = FingerboardViewController.createFingerboard(this.numStrings, this.numNotePositions, this.fretted);
@@ -42,6 +42,9 @@ var FingerboardQuiz = {
 
             var $strings = FingerboardViewController.createStrings(this.numStrings);
             $strings.appendTo(this.$fingerboardContainer);
+            
+            var $guide = FingerboardViewController.createGuide(this.numNotePositions, this.fretted);
+            $guide.appendTo(this.$fingerboardContainer);
 
             // set the fb unit lenghts
             FingerboardViewController.resizeFingerboard(this.numNotePositions);
@@ -99,7 +102,7 @@ $(document).ready(function() {
         
     });
     
-    $("#button-highlight-chord").click(function() {
+    $("#chord-select").change(function() {
         var chordSymbol = $("#chord-select").val();
         var startingPitch = $("#pitch-select").val();
         
@@ -111,7 +114,7 @@ $(document).ready(function() {
         FingerboardViewController.highlightScaleOrChord(type, chordSymbol, startingPitch);
     });
     
-    $("#button-highlight-scale").click(function() {
+    $("#scale-select").change(function() {
         var scaleSymbol = $("#scale-select").val();
         var startingPitch = $("#pitch-select").val();
         
@@ -119,6 +122,11 @@ $(document).ready(function() {
         var type = scaleSelect.options[scaleSelect.selectedIndex].dataset.type;
         
         FingerboardViewController.highlightScaleOrChord(type, scaleSymbol, startingPitch);
+    });
+    
+    $("#guide-select").change(function() {
+        var selectedStyle = $(this).val();
+        FingerboardViewController.changeGuideStyle(selectedStyle);
     });
     
     

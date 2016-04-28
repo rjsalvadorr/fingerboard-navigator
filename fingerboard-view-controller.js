@@ -8,6 +8,7 @@ var FingerboardViewController = {
             return Math.pow(2, 1 / 12);
         },
         NUM_PITCHES: 12,
+        NUM_SEMITONES_IN_OCTAVE: 12,
         DESIGN_CODES: ["minimalist", "guitar", "violin"],
         PITCH_CHOICES: [
             "Cb4",
@@ -99,7 +100,13 @@ var FingerboardViewController = {
                     67 // G4
                 ]
             }
-        }
+        },
+        GUIDE_TYPES: [
+            {cssClass: "dots", name: "Dots", value: "GUITAR_DOTS"},
+            {cssClass: "numerals", name: "Numerals", value: "GUITAR_NUMERALS"},
+            {cssClass: "harmonic-nodes", name: "Harmonic Nodes", value: "HARMONIC_NODES"}
+        ],
+        GUIDE_POSITIONS: [3, 5, 7, 12, 15, 17, 19, 24]
     },
     usingSharpNames: true,
     initialize: function() {
@@ -142,10 +149,13 @@ var FingerboardViewController = {
         // if position is already marked, unmark it
     },
     
-    createNut: function(numStrings) {
+    createNut: function(numStrings, isFretted) {
         console.log("creating nut...");
+        
+        var classFretted = isFretted ? "fretted" : "fretless"
+        
         var $nut = jQuery("<div/>", {
-            class: "nut"
+            class: "nut " + classFretted
         });
         var $fbUnit = jQuery("<div/>", {
             class: "nut-unit",
@@ -201,9 +211,57 @@ var FingerboardViewController = {
         return $strings;
     },
     
+    createGuide: function(numNotePositions, isFretted) {
+        console.log("creating guide...");
+        
+        var classFretted = isFretted ? "fretted" : "fretless"
+        
+        var $guide = jQuery("<div/>", {
+            class: "guide " + classFretted
+        });
+        
+        // for each note position, create a guide unit.
+        for(var notePos = 1; notePos <= numNotePositions; notePos++) {
+            var $guideUnit = this.createGuideUnit(notePos);
+            
+            $guideUnit.appendTo($guide);
+        }
+        
+        console.log("guide creation successful!");
+        return $guide;
+    },
+    
+    createGuideUnit: function(fbPositionNum) {
+        console.log("creating guide unit...");
+        
+        var $guideUnit = jQuery("<div/>", {
+            class: "guide-unit",
+            "data-position": fbPositionNum
+        });
+        
+        
+        if(FingerboardViewController.constants.GUIDE_POSITIONS.indexOf(fbPositionNum) > -1) {
+            var markerClass = fbPositionNum % 12 == 0 ? "two-markers" : "one-marker";
+
+            var $guideMarker = jQuery("<div/>", {
+                class: "guide-marker " + markerClass
+            });
+
+            var $guideTextMarker = jQuery("<div/>", {
+                class: "guide-text-marker",
+                text: romanize(fbPositionNum)
+            });
+
+            $guideTextMarker.appendTo($guideUnit);
+            $guideMarker.appendTo($guideUnit);
+        }
+        
+        return $guideUnit;
+    },
+    
     resizeFingerboard: function(numNotePositions) {
         var fbSectionPercentages = this.getFbSectionPercentages(numNotePositions);
-        $(".fingerboard-unit").each(function() {
+        $(".fingerboard-unit, .guide-unit").each(function() {
             this.style.width = fbSectionPercentages[this.dataset.position - 1] + "%";
         });
         console.log("FingerboardViewController.resizeFingerboard() done!");
@@ -291,7 +349,7 @@ var FingerboardViewController = {
         
         var chordOptions = [];
         var scaleOptions = [];
-        
+        var guideOptions = [];
         
         var currentScaleChordType = 0;
         var basePitchId = 69; // A440
@@ -327,6 +385,8 @@ var FingerboardViewController = {
             
             noteOptions.push(newOptionValuePair);
         }
+        
+        var currentScaleChordType;
     
         // initializing available scale/chord types
         for(var i = 0; i < FingerboardController.constants.SCALE_CHORD_TYPES.length; i++) {
@@ -341,12 +401,22 @@ var FingerboardViewController = {
                 chordOptions.push(newOptionValuePair);
             }
         }
+        
+        var currentMarkerType;
+        
+        // initializing guides
+        for(var i = 0; i < FingerboardViewController.constants.GUIDE_TYPES.length; i++) {
+            currentMarkerType = FingerboardViewController.constants.GUIDE_TYPES[i];
+            var newOptionValuePair = {option: currentMarkerType.name, value: currentMarkerType.value, extras: ""};
+            guideOptions.push(newOptionValuePair);
+        }
     
         var presetSelect = this.createSelectFromList("preset-select", "preset-select", "dynamic-select", presetOptions);
         var pitchSelect = this.createSelectFromList("pitch-select", "pitch-select", "dynamic-select", noteOptions);
         
         var chordSelect = this.createSelectFromList("chord-select", "chord-select", "dynamic-select", chordOptions);
         var scaleSelect = this.createSelectFromList("scale-select", "scale-select", "dynamic-select", scaleOptions);
+        var guideSelect = this.createSelectFromList("guide-select", "guide-select", "dynamic-select", guideOptions);
         
         var $controlElement = $( "<div/>", {
             id: "fingerboard-controls",
@@ -365,12 +435,14 @@ var FingerboardViewController = {
         
         $controlElement.append("<label class=\"fingerboard-control-label\">Chord Select: </label>");
         $controlElement.append(chordSelect);
-        $controlElement.append("<button type=\"button\" id=\"button-highlight-chord\" class=\"btn btn-primary fingerboard-control-button\">Highlight Chord</button>");
         $controlElement.append("<br>");
         
-        $controlElement.append("<label class=\"fingerboard-control-button\">Scale Select: </label>");
+        $controlElement.append("<label class=\"fingerboard-control-label\">Scale Select: </label>");
         $controlElement.append(scaleSelect);
-        $controlElement.append("<button type=\"button\" id=\"button-highlight-scale\" class=\"btn btn-primary fingerboard-control-button\">Highlight Scale</button>");
+        $controlElement.append("<br>");
+        
+        $controlElement.append("<label class=\"fingerboard-control-label\">Guide Style: </label>");
+        $controlElement.append(guideSelect);
         $controlElement.append("<br>");
         
         return $controlElement;
@@ -512,6 +584,19 @@ var FingerboardViewController = {
         }
         
         console.log("FingerboardViewController.changeFbDesign() done!");
+    },
+    
+    changeGuideStyle: function(style) {
+        var $guideElement = $(".guide");
+        
+        for(var i = 0; i < FingerboardViewController.constants.GUIDE_TYPES.length; i++) {
+            currentMarkerType = FingerboardViewController.constants.GUIDE_TYPES[i];
+            if(currentMarkerType.value === style){
+                $guideElement.addClass(currentMarkerType.cssClass);
+            } else {
+                $guideElement.removeClass(currentMarkerType.cssClass);
+            }
+        }
     },
     
     

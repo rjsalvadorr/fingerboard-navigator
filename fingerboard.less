@@ -1,8 +1,17 @@
 @fbUnitHeight: 30px;
+@nutWidth: 30px;
 @noteLabelDiameter: 28px;
 @noteLabelRadius: @noteLabelDiameter / 2;
+@noteLabelBorderWidth: 2px;
+
 @markerDiameter: 24px;
 @fretColour: #dddddd;
+
+@guideUnitHeight: 45px;
+@singleMarkerDiameter: 16px;
+@dualMarkerDiameter: 16px;
+
+@textMarkerWidth: 20px;
 
 body {
     background: none;
@@ -16,13 +25,17 @@ body {
 }
 
 .nut {
-    width: @fbUnitHeight;
+    width: @nutWidth;
     display: inline-block;
     background-color: #222;
     
     &.minimalist {
         .minimalist();
         border-right: none;
+    }
+    
+    &.fretted {
+        background-color: #ffe4c4;
     }
 }
 
@@ -34,6 +47,10 @@ body {
     
     &.minimalist {
         .minimalist();
+    }
+    
+    &.fretted {
+        background-color: #33200C;
     }
 }
 
@@ -54,7 +71,7 @@ body {
     font-weight: bold;
     font-size: 16px;
     
-    border: 2px #000 solid;
+    border: @noteLabelBorderWidth #000 solid;
     background-color: #fff;
     z-index: 300;
 }
@@ -75,6 +92,7 @@ body {
 
 .nut-unit {
     display: inline-block;
+    width: 100%;
 }
 
 .fretless {
@@ -85,6 +103,26 @@ body {
     .note-unit-label {
         position: absolute;
         top: (@fbUnitHeight - @noteLabelDiameter) / 2;
+        right: 0;
+    }
+    
+    .guide-marker{
+        right: 0;
+        
+        &.one-marker::before,
+        &.one-marker::after{
+            margin-left: -(@noteLabelRadius - @noteLabelBorderWidth);
+        }
+        
+        &.two-markers::before,
+        &.two-markers::after{
+            margin-left: -(@noteLabelRadius - @noteLabelBorderWidth);
+        }
+    }
+    
+    .guide-text-marker {
+        position: absolute;
+        width: @noteLabelDiameter;
         right: 0;
     }
 }
@@ -103,7 +141,114 @@ body {
         top: (@fbUnitHeight - @noteLabelDiameter) / 2;
         left: calc(~"50% - " @noteLabelRadius);
     }
+    
+    .guide-marker{
+        left: 50%;
+        
+        &.one-marker::before,
+        &.one-marker::after{
+            margin-left: -(@singleMarkerDiameter / 2);
+        }
+        
+        &.two-markers::before,
+        &.two-markers::after{
+            margin-left: -(@dualMarkerDiameter / 2);
+        }
+    }
+    
+    .guide-text-marker {
+    
+    }
 }
+
+
+/******************************************************************************
+*****   FINGERBOARD GUIDE   ***************************************************
+******************************************************************************/
+
+.guide {
+    margin-left: @nutWidth;
+    
+    .guide-marker,
+    .guide-text-marker {
+        display: none;
+    }
+    
+    &.dots {
+        .guide-marker {
+            display: block;
+        }
+    }
+    
+    &.numerals {
+        .guide-text-marker {
+            display: block;
+        }
+    }
+    
+    &.harmonic-nodes {
+        
+    }
+}
+
+.guide-unit {
+    height: @guideUnitHeight;
+    display: inline-block;
+    position: relative;
+}
+
+.guide-marker {
+    position: absolute;
+    top: 0;
+    height: @guideUnitHeight;
+    width: 10px;
+}
+
+.guide-marker.one-marker {
+    &::before {
+        position: absolute;
+        content: "";
+        background-color: white;
+        width: @singleMarkerDiameter;
+        height: @singleMarkerDiameter;
+        border-radius: @singleMarkerDiameter / 2;
+        margin-left: -(@singleMarkerDiameter / 2);
+        top: @guideUnitHeight / 2 - @singleMarkerDiameter / 2;
+    }
+}
+
+.guide-marker.two-markers {
+    &::before,
+    &::after {
+        position: absolute;
+        content: "";
+        width: @dualMarkerDiameter;
+        height: @dualMarkerDiameter;
+        border-radius: @dualMarkerDiameter / 2;
+        background-color: white;
+        margin-left: -(@dualMarkerDiameter / 2);
+    }
+    
+    &::before {
+        top: 4px;
+    }
+
+    &::after {
+        bottom: 4px;
+    }
+}
+
+.guide-text-marker {
+    text-align: center;
+    font-weight: bold;
+    font-family: serif;
+    line-height: @guideUnitHeight;
+}
+
+
+/******************************************************************************
+*****   STRINGS   *************************************************************
+******************************************************************************/
 
 .strings {
     position: absolute;
@@ -122,6 +267,11 @@ body {
     background-color: #000;
 }
 
+
+/******************************************************************************
+*****   CONTROLS AND TEXT   ***************************************************
+******************************************************************************/
+
 #text-current-instrument {
     font-size: 36px;
     font-weight: bold;
@@ -132,7 +282,11 @@ body {
     display: inline;
 }
 
-/* HIGHLIGHTING */
+
+/******************************************************************************
+*****   HIGHLIGHTING   ********************************************************
+******************************************************************************/
+
 .highlight-root {
     background-color: #ff6666;
 }
@@ -149,11 +303,21 @@ body {
     background-color: #ffcccc;
 }
 
-/* THEMES */
+
+/******************************************************************************
+*****   THEMES   **************************************************************
+******************************************************************************/
+
 .minimalist() {
     background-color: white !important;
     border-color: black !important;
     border-style: solid;
     border-width: 2px !important;
     color: black !important;
+}
+
+.minimalist { 
+    .note-unit-fret {
+        background-color: black;
+    }
 }

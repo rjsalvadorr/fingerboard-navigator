@@ -20,6 +20,12 @@ body {
   color: black !important;
   border-right: none;
 }
+.nut.minimalist .note-unit-fret {
+  background-color: black;
+}
+.nut.fretted {
+  background-color: #ffe4c4;
+}
 .fingerboard {
   width: calc(100% - 30px);
   display: inline-block;
@@ -31,6 +37,12 @@ body {
   border-style: solid;
   border-width: 2px !important;
   color: black !important;
+}
+.fingerboard.minimalist .note-unit-fret {
+  background-color: black;
+}
+.fingerboard.fretted {
+  background-color: #33200C;
 }
 .fingerboard-unit {
   display: inline-block;
@@ -62,10 +74,27 @@ body {
 }
 .nut-unit {
   display: inline-block;
+  width: 100%;
 }
 .fretless .note-unit-label {
   position: absolute;
   top: 1px;
+  right: 0;
+}
+.fretless .guide-marker {
+  right: 0;
+}
+.fretless .guide-marker.one-marker::before,
+.fretless .guide-marker.one-marker::after {
+  margin-left: -12px;
+}
+.fretless .guide-marker.two-markers::before,
+.fretless .guide-marker.two-markers::after {
+  margin-left: -12px;
+}
+.fretless .guide-text-marker {
+  position: absolute;
+  width: 28px;
   right: 0;
 }
 .fretted .note-unit-fret {
@@ -80,6 +109,79 @@ body {
   top: 1px;
   left: calc(50% -  14px);
 }
+.fretted .guide-marker {
+  left: 50%;
+}
+.fretted .guide-marker.one-marker::before,
+.fretted .guide-marker.one-marker::after {
+  margin-left: -8px;
+}
+.fretted .guide-marker.two-markers::before,
+.fretted .guide-marker.two-markers::after {
+  margin-left: -8px;
+}
+/******************************************************************************
+*****   FINGERBOARD GUIDE   ***************************************************
+******************************************************************************/
+.guide {
+  margin-left: 30px;
+}
+.guide .guide-marker,
+.guide .guide-text-marker {
+  display: none;
+}
+.guide.dots .guide-marker {
+  display: block;
+}
+.guide.numerals .guide-text-marker {
+  display: block;
+}
+.guide-unit {
+  height: 45px;
+  display: inline-block;
+  position: relative;
+}
+.guide-marker {
+  position: absolute;
+  top: 0;
+  height: 45px;
+  width: 10px;
+}
+.guide-marker.one-marker::before {
+  position: absolute;
+  content: "";
+  background-color: white;
+  width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  margin-left: -8px;
+  top: 14.5px;
+}
+.guide-marker.two-markers::before,
+.guide-marker.two-markers::after {
+  position: absolute;
+  content: "";
+  width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  background-color: white;
+  margin-left: -8px;
+}
+.guide-marker.two-markers::before {
+  top: 4px;
+}
+.guide-marker.two-markers::after {
+  bottom: 4px;
+}
+.guide-text-marker {
+  text-align: center;
+  font-weight: bold;
+  font-family: serif;
+  line-height: 45px;
+}
+/******************************************************************************
+*****   STRINGS   *************************************************************
+******************************************************************************/
 .strings {
   position: absolute;
   top: 0;
@@ -94,6 +196,9 @@ body {
   height: 3px;
   background-color: #000;
 }
+/******************************************************************************
+*****   CONTROLS AND TEXT   ***************************************************
+******************************************************************************/
 #text-current-instrument {
   font-size: 36px;
   font-weight: bold;
@@ -102,7 +207,9 @@ body {
 #title-current-instrument {
   display: inline;
 }
-/* HIGHLIGHTING */
+/******************************************************************************
+*****   HIGHLIGHTING   ********************************************************
+******************************************************************************/
 .highlight-root {
   background-color: #ff6666;
 }
@@ -115,4 +222,9 @@ body {
 .highlight-seventh {
   background-color: #ffcccc;
 }
-/* THEMES */
+/******************************************************************************
+*****   THEMES   **************************************************************
+******************************************************************************/
+.minimalist .note-unit-fret {
+  background-color: black;
+}
