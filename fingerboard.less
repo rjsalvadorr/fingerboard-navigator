@@ -5,6 +5,7 @@
 @noteLabelBorderWidth: 2px;
 
 @markerDiameter: 24px;
+@fretWidth: 4px;
 @fretColour: #dddddd;
 
 @guideUnitHeight: 45px;
@@ -12,6 +13,8 @@
 @dualMarkerDiameter: 16px;
 
 @textMarkerWidth: 20px;
+@harmonicTextWidth: 50px;
+@harmonicMarkerWidth: 16px;
 
 body {
     background: none;
@@ -153,7 +156,7 @@ body {
 
 .fretted {
     .note-unit-fret {
-        width: 4px;
+        width: @fretWidth;
         height: 100%;
         position: absolute;
         right: 0;
@@ -183,7 +186,11 @@ body {
     }
     
     .guide-text-marker {
+        
+    }
     
+    .guide-harmonic-marker {
+        margin-right: -(@noteLabelRadius - (@fretWidth / 2));
     }
 }
 
@@ -196,7 +203,8 @@ body {
     margin-left: @nutWidth;
     
     .guide-marker,
-    .guide-text-marker {
+    .guide-text-marker,
+    .guide-harmonic-marker {
         display: none;
     }
     
@@ -213,7 +221,9 @@ body {
     }
     
     &.harmonic-nodes {
-        
+        .guide-harmonic-marker {
+            display: block;
+        }
     }
 }
 
@@ -228,7 +238,7 @@ body {
     position: absolute;
     top: 0;
     height: @guideUnitHeight;
-    width: 10px;
+    width: 8px;
 }
 
 .guide-marker.one-marker {
@@ -272,6 +282,26 @@ body {
     line-height: @guideUnitHeight;
 }
 
+.guide-harmonic-marker {
+    position: absolute;
+    text-align: center;
+    width: @noteLabelDiameter;
+    right: 0;
+    top: 5px;
+    font-size: 13px;
+    font-weight: bold;
+    
+    &::before {
+        content: "";
+        width: @harmonicMarkerWidth;
+        height: @harmonicMarkerWidth;
+        transform: rotate(45deg);
+        border: #000 2px solid;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
 
 /******************************************************************************
 *****   STRINGS   *************************************************************

@@ -131,6 +131,9 @@ body {
 .fretted .guide-marker.two-markers::after {
   margin-left: -8px;
 }
+.fretted .guide-harmonic-marker {
+  margin-right: -11px;
+}
 /******************************************************************************
 *****   FINGERBOARD GUIDE   ***************************************************
 ******************************************************************************/
@@ -138,13 +141,17 @@ body {
   margin-left: 30px;
 }
 .guide .guide-marker,
-.guide .guide-text-marker {
+.guide .guide-text-marker,
+.guide .guide-harmonic-marker {
   display: none;
 }
 .guide.dots .guide-marker {
   display: block;
 }
 .guide.numerals .guide-text-marker {
+  display: block;
+}
+.guide.harmonic-nodes .guide-harmonic-marker {
   display: block;
 }
 .guide-unit {
@@ -157,7 +164,7 @@ body {
   position: absolute;
   top: 0;
   height: 45px;
-  width: 10px;
+  width: 8px;
 }
 .guide-marker.one-marker::before {
   position: absolute;
@@ -190,6 +197,25 @@ body {
   font-weight: bold;
   font-family: serif;
   line-height: 45px;
+}
+.guide-harmonic-marker {
+  position: absolute;
+  text-align: center;
+  width: 26px;
+  right: 0;
+  top: 5px;
+  font-size: 13px;
+  font-weight: bold;
+}
+.guide-harmonic-marker::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  transform: rotate(45deg);
+  border: #000 2px solid;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 /******************************************************************************
 *****   STRINGS   *************************************************************

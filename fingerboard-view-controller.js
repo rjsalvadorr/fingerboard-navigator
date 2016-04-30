@@ -251,9 +251,37 @@ var FingerboardViewController = {
                 class: "guide-text-marker",
                 text: romanize(fbPositionNum)
             });
-
+            
+            var harmonicString;
+            var hasHarmonicValue = true;
+            switch(fbPositionNum) {
+                case 12:
+                    harmonicString = "2nd";
+                    break;
+                case 7:
+                case 19:
+                    harmonicString = "3rd";
+                    break;
+                case 5:
+                case 24:
+                    harmonicString = "4th";
+                    break;
+                default:
+                    harmonicString = "";
+                    hasHarmonicValue = false;
+                    break;
+            }
+            
             $guideTextMarker.appendTo($guideUnit);
             $guideMarker.appendTo($guideUnit);
+            
+            if(hasHarmonicValue) {
+                var $guideHarmonicMarker = jQuery("<div/>", {
+                    class: "guide-harmonic-marker ",
+                    text: harmonicString
+                });
+                $guideHarmonicMarker.appendTo($guideUnit);
+            }
         }
         
         return $guideUnit;
