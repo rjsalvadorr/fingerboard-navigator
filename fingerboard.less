@@ -1,6 +1,6 @@
 @fbUnitHeight: 30px;
 @nutWidth: 30px;
-@noteLabelDiameter: 28px;
+@noteLabelDiameter: 26px;
 @noteLabelRadius: @noteLabelDiameter / 2;
 @noteLabelBorderWidth: 2px;
 
@@ -31,7 +31,12 @@ body {
     
     &.minimalist {
         .minimalist();
+        
         border-right: none;
+        
+        .note-unit-label {
+            border: @noteLabelBorderWidth #000 solid;
+        }
     }
     
     &.fretted {
@@ -47,6 +52,14 @@ body {
     
     &.minimalist {
         .minimalist();
+        
+        .note-unit-label {
+            border: @noteLabelBorderWidth #000 solid;
+        }
+        
+        .note-unit-fret {
+            background: #000 !important;
+        }
     }
     
     &.fretted {
@@ -63,6 +76,14 @@ body {
     position: relative;
 }
 
+.strings {
+    &.minimalist .string {
+        background: #000 !important;
+        box-shadow: none !important;
+        border-width: 0 !important;
+    }
+}
+
 .note-unit-label {
     height: @noteLabelDiameter;
     width: @noteLabelDiameter;
@@ -71,7 +92,6 @@ body {
     font-weight: bold;
     font-size: 16px;
     
-    border: @noteLabelBorderWidth #000 solid;
     background-color: #fff;
     z-index: 300;
 }
@@ -87,6 +107,10 @@ body {
         position: absolute;
         top: (@fbUnitHeight - @noteLabelDiameter) / 2;
         left: 2px;
+    }
+    
+    .note-unit-fret {
+        display: none !important;
     }
 }
 
@@ -129,11 +153,13 @@ body {
 
 .fretted {
     .note-unit-fret {
-        width: 2px;
+        width: 4px;
         height: 100%;
-        background-color: @fretColour;
         position: absolute;
         right: 0;
+        
+        background-color: #999;
+        background: linear-gradient(90deg, #ddd, #999);
     }
         
     .note-unit-label {
@@ -195,6 +221,7 @@ body {
     height: @guideUnitHeight;
     display: inline-block;
     position: relative;
+    vertical-align: top;
 }
 
 .guide-marker {
@@ -265,6 +292,8 @@ body {
 .string {
     height: 3px;
     background-color: #000;
+    background: linear-gradient(#CCC, #666);
+    box-shadow: 0 2px 3px #281909;
 }
 
 
@@ -288,15 +317,15 @@ body {
 ******************************************************************************/
 
 .highlight-root {
-    background-color: #ff6666;
+    background-color: #ff3333;
 }
 
 .highlight-third {
-    background-color: #ffaaaa;
+    background-color: #ff9999;
 }
 
 .highlight-fifth {
-    background-color: #ff8888;
+    background-color: #ff6666;
 }
 
 .highlight-seventh {
@@ -314,10 +343,4 @@ body {
     border-style: solid;
     border-width: 2px !important;
     color: black !important;
-}
-
-.minimalist { 
-    .note-unit-fret {
-        background-color: black;
-    }
 }

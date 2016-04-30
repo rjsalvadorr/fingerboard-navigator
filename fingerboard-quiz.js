@@ -85,8 +85,12 @@ $(document).ready(function() {
     // TESTING!!!
     FingerboardViewController.getFbSectionPercentages(12);
     
-    $("#button-design-minimalist").click(function() {
-        FingerboardViewController.changeFbDesign("minimalist");    
+    $("#chk-design-minimalist").change(function() {
+        if(this.checked) {
+            FingerboardViewController.changeFbDesign("minimalist");    
+        } else {
+            FingerboardViewController.changeFbDesign();  
+        }
     });
     
     $("#button-highlight-open-strings").click(function() {

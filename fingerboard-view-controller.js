@@ -9,7 +9,7 @@ var FingerboardViewController = {
         },
         NUM_PITCHES: 12,
         NUM_SEMITONES_IN_OCTAVE: 12,
-        DESIGN_CODES: ["minimalist", "guitar", "violin"],
+        DESIGN_CODES: ["minimalist", "light", "dark"],
         PITCH_CHOICES: [
             "Cb4",
             "C4",
@@ -574,7 +574,13 @@ var FingerboardViewController = {
     
     changeFbDesign: function(designCode) {
         console.log("FingerboardViewController.changeFbDesign() started...");
-        var $styleables = $(".nut, .fingerboard");
+        var $styleables = $(".nut, .fingerboard, .strings");
+        
+        // No argument? Set design code to an empty string. It'll remove the classes later
+        if(designCode === null || typeof(designCode) === "undefined") {
+            designCode = "";
+        }
+        
         for(var i = 0; i < FingerboardViewController.constants.DESIGN_CODES.length; i++) {
             if(FingerboardViewController.constants.DESIGN_CODES[i] === designCode) {
                 $styleables.addClass(FingerboardViewController.constants.DESIGN_CODES[i]);
