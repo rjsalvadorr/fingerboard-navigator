@@ -48,6 +48,18 @@ var FingerboardViewController = {
                     36 // C2
                 ]
             },
+            VIOLA: {
+                name: "Viola",
+                numStrings: 4,
+                numPositions: 20,
+                fretted: false,
+                startingPitches: [
+                    69, // A4
+                    62, // D4
+                    55, // G3
+                    48 // C3
+                ]
+            },
             GUITAR: {
                 name: "Guitar (Standard tuning)",
                 numStrings: 6,
@@ -60,6 +72,18 @@ var FingerboardViewController = {
                     50, // D3
                     45, // A3
                     40 // E2
+                ]
+            },
+            BASS_GUITAR: {
+                name: "Bass Guitar (Standard tuning)",
+                numStrings: 4,
+                numPositions: 20,
+                fretted: true,
+                startingPitches: [
+                    43, // G2
+                    38, // D2
+                    33, // A2
+                    28 // E1
                 ]
             },
             GUITAR_NST: {
@@ -637,9 +661,25 @@ var FingerboardViewController = {
     /**************************************************************************
     *   LOGIC FOR CONTROLS   **************************************************
     **************************************************************************/
-    
-    // next function - hide or show various pitch <option> based on currently selected chord/scale type.
-    // 
+    reloadUi: function(uiSettingsObj) {
+        /* uiSettingsObj has:
+            - preset
+            - pitch
+            - scaleOrChordType
+            - scaleOrChordSymbol
+            - isMinimalist
+            - guideStyle
+        */
+        
+        if(uiSettingsObj.isMinimalist) {
+            changeFbDesign("minimalist");
+        } else {
+            changeFbDesign();
+        }
+        
+        this.changeGuideStyle(uiSettingsObj.guideStyle);
+        this.highlightScaleOrChord(uiSettingsObj.scaleOrChordType, uiSettingsObj.scaleOrChordSymbol, uiSettingsObj.pitch);
+    },
     
     
     
