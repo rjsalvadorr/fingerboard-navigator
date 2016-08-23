@@ -20,6 +20,19 @@ body {
   color: black !important;
   border-right: none;
 }
+.nut.minimalist .highlight-root {
+  background-color: #000;
+  color: #fff;
+}
+.nut.minimalist .highlight-third {
+  background-color: #eee;
+}
+.nut.minimalist .highlight-fifth {
+  background-color: #bbb;
+}
+.nut.minimalist .highlight-seventh {
+  background-color: #fff;
+}
 .nut.minimalist .note-unit-label {
   border: 2px #000 solid;
 }
@@ -37,6 +50,19 @@ body {
   border-style: solid;
   border-width: 2px !important;
   color: black !important;
+}
+.fingerboard.minimalist .highlight-root {
+  background-color: #000;
+  color: #fff;
+}
+.fingerboard.minimalist .highlight-third {
+  background-color: #eee;
+}
+.fingerboard.minimalist .highlight-fifth {
+  background-color: #bbb;
+}
+.fingerboard.minimalist .highlight-seventh {
+  background-color: #fff;
 }
 .fingerboard.minimalist .note-unit-label {
   border: 2px #000 solid;
@@ -154,6 +180,11 @@ body {
 .guide.harmonic-nodes .guide-harmonic-marker {
   display: block;
 }
+.guide.minimalist .guide-marker.two-markers::before,
+.guide.minimalist .guide-marker.two-markers::after,
+.guide.minimalist .guide-marker.one-marker::before {
+  border: solid 2px black;
+}
 .guide-unit {
   height: 45px;
   display: inline-block;
@@ -261,6 +292,19 @@ body {
 }
 .highlight-seventh {
   background-color: #ffcccc;
+}
+.minimalist .highlight-root {
+  background-color: #000;
+  color: #fff;
+}
+.minimalist .highlight-third {
+  background-color: #eee;
+}
+.minimalist .highlight-fifth {
+  background-color: #bbb;
+}
+.minimalist .highlight-seventh {
+  background-color: #fff;
 }
 /******************************************************************************
 *****   THEMES   **************************************************************

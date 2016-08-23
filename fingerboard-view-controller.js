@@ -86,6 +86,19 @@ var FingerboardViewController = {
                     28 // E1
                 ]
             },
+            BASS_GUITAR_5_STR: {
+                name: "Bass Guitar (5 strings, Standard tuning)",
+                numStrings: 5,
+                numPositions: 20,
+                fretted: true,
+                startingPitches: [
+                    43, // G2
+                    38, // D2
+                    33, // A2
+                    28, // E1
+                    23 // B0
+                ]
+            },
             GUITAR_NST: {
                 name: "Guitar (NST/Fifths tuning)",
                 numStrings: 6,
@@ -130,7 +143,7 @@ var FingerboardViewController = {
             {cssClass: "numerals", name: "Numerals", value: "GUITAR_NUMERALS"},
             {cssClass: "harmonic-nodes", name: "Harmonic Nodes", value: "HARMONIC_NODES"}
         ],
-        GUIDE_POSITIONS: [3, 5, 7, 12, 15, 17, 19, 24]
+        GUIDE_POSITIONS: [3, 5, 7, 9, 12, 15, 17, 19, 24]
     },
     usingSharpNames: true,
     initialize: function() {
@@ -626,7 +639,7 @@ var FingerboardViewController = {
     
     changeFbDesign: function(designCode) {
         console.log("FingerboardViewController.changeFbDesign() started...");
-        var $styleables = $(".nut, .fingerboard, .strings");
+        var $styleables = $(".nut, .fingerboard, .strings, .guide");
         
         // No argument? Set design code to an empty string. It'll remove the classes later
         if(designCode === null || typeof(designCode) === "undefined") {

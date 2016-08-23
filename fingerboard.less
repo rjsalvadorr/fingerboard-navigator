@@ -225,6 +225,16 @@ body {
             display: block;
         }
     }
+    
+    &.minimalist  {
+        .guide-marker {
+            &.two-markers::before,
+            &.two-markers::after,
+            &.one-marker::before {
+                border: solid 2px black;
+            }
+        }
+    }
 }
 
 .guide-unit {
@@ -360,6 +370,25 @@ body {
 
 .highlight-seventh {
     background-color: #ffcccc;
+}
+
+.minimalist {
+    .highlight-root {
+        background-color: #000;
+        color: #fff;
+    }
+
+    .highlight-third {
+        background-color: #eee;
+    }
+
+    .highlight-fifth {
+        background-color: #bbb;
+    }
+
+    .highlight-seventh {
+        background-color: #fff;
+    }
 }
 
 

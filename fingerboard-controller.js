@@ -11,6 +11,7 @@ var FingerboardController = {
             {tSymbol: "M", quality: "MAJOR", type: "CHORD", name: "Major triad", id: 21, intervals: [4, 3]},
             {tSymbol: "m", quality: "MINOR", type: "CHORD", name: "Minor triad", id: 22, intervals: [3, 4]},
             {tSymbol: "dim", quality: "DIMINISHED", type: "CHORD", name: "Diminished triad", id: 23, intervals: [3, 3]},
+            {tSymbol: "aug", quality: "AUGMENTED", type: "CHORD", name: "Augmented triad", id: 24, intervals: [4, 4]},
 
             {tSymbol: "7b5", quality: "DIMINISHED", type: "CHORD", name: "Half-diminished 7th", id: 33, intervals: [3, 3, 4]},
             {tSymbol: "dim7", quality: "DIMINISHED", type: "CHORD", name: "Diminished 7th", id: 34, intervals: [3, 3, 3]},
